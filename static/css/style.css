@@ -1,0 +1,819 @@
+/* Reset and Polish */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Color Palette */
+    --bg-dark: #0A0E1A;
+    --bg-card: rgba(22, 28, 45, 0.6);
+    --bg-card-hover: rgba(30, 38, 59, 0.8);
+    --border-color: rgba(255, 255, 255, 0.1);
+    
+    --text-main: #FFFFFF;
+    --text-muted: #94A3B8;
+    
+    --accent-teal: #00F5D4;
+    --accent-amber: #FFB347;
+    --accent-violet: #A78BFA;
+    
+    /* Typography */
+    --font-heading: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    
+    /* Shadows & Effects */
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --glow-teal: 0 0 15px rgba(0, 245, 212, 0.3);
+    
+    /* Animations */
+    --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-fast: 0.2s ease;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* Create a subtle background glow */
+    background-image: radial-gradient(circle at 15% 50%, rgba(167, 139, 250, 0.05) 0%, transparent 50%),
+                      radial-gradient(circle at 85% 30%, rgba(0, 245, 212, 0.05) 0%, transparent 50%);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+}
+
+/* Utilities */
+.hidden { display: none !important; }
+.glass-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--glass-shadow);
+}
+.accent { color: var(--accent-teal); }
+
+/* Common Components */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    font-family: var(--font-body);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--accent-teal);
+    color: var(--bg-dark);
+}
+.btn-primary:hover {
+    box-shadow: var(--glow-teal);
+    transform: translateY(-2px);
+}
+
+/* App Container */
+#app-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+.view {
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Auth View --- */
+#view-auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem;
+    animation: slideUp 0.6s var(--spring);
+}
+
+.logo {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.auth-tabs {
+    display: flex;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+}
+
+.tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    padding: 0.75rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    position: relative;
+}
+
+.tab-btn.active {
+    color: var(--text-main);
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--accent-teal);
+    box-shadow: var(--glow-teal);
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: white;
+    font-family: var(--font-body);
+    outline: none;
+    transition: all var(--transition-fast);
+}
+
+.input-group input:focus {
+    border-color: var(--accent-teal);
+    box-shadow: var(--glow-teal);
+}
+
+.auth-form button {
+    width: 100%;
+    margin-top: 1rem;
+}
+.auth-form.hidden {
+    display: none;
+}
+
+.color-picker {
+    display: flex;
+    gap: 10px;
+}
+.color-option {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s;
+}
+.color-option.active {
+    border-color: white;
+    transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* === Continuation of style.css === */
+
+/* --- Layout specific styles --- */
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-left: 250px;
+    margin-right: 320px;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    border-right: 1px solid var(--border-color);
+    padding: 2rem 1rem;
+    z-index: 100;
+}
+
+.sidebar-logo {
+    font-size: 2.5rem;
+    color: var(--accent-teal);
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all var(--transition-fast);
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-main);
+}
+
+.nav-link.active {
+    background: rgba(0, 245, 212, 0.1);
+    color: var(--accent-teal);
+    border-right: 3px solid var(--accent-teal);
+}
+
+.nav-link i {
+    font-size: 1.25rem;
+}
+
+/* Right Panel */
+.right-panel {
+    width: 320px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    border-left: 1px solid var(--border-color);
+    padding: 2rem;
+    z-index: 100;
+}
+
+.panel-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(0,0,0,0.2);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.panel-section h3 {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: var(--accent-amber);
+}
+
+/* Top Nav */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 3rem;
+}
+
+.date-text {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-icon {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+}
+.nav-icon:hover { color: var(--accent-teal); }
+
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #EF4444;
+    color: white;
+    font-size: 0.7rem;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    position: relative;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent-teal);
+    color: var(--bg-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem;
+    display: none;
+    min-width: 150px;
+    box-shadow: var(--glass-shadow);
+}
+.user-profile:hover .profile-dropdown {
+    display: block;
+    animation: slideUp 0.3s var(--spring);
+}
+
+.profile-dropdown a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--text-main);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+.profile-dropdown a:hover {
+    background: rgba(255,0,0,0.1);
+    color: #EF4444;
+}
+
+/* Content Area */
+.content-area {
+    padding: 1rem 3rem 3rem 3rem;
+    flex: 1;
+}
+
+.content-section {
+    display: none;
+    animation: slideUp 0.4s var(--spring);
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card h3 {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.progress-info {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.progress-info h1 {
+    font-size: 2.5rem;
+    color: var(--accent-teal);
+}
+
+.progress-bar-container {
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--accent-teal);
+    border-radius: 4px;
+    transition: width 1s var(--spring);
+    box-shadow: var(--glow-teal);
+}
+
+.streak-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.streak-display h1 {
+    font-size: 3rem;
+}
+
+.streak-icon {
+    font-size: 2.5rem;
+    color: var(--text-muted);
+    transition: all 0.5s;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .right-panel { display: none; }
+    .main-wrapper { margin-right: 0; }
+}
+
+@media (max-width: 768px) {
+    .sidebar { 
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+    }
+    .main-wrapper { margin-left: 0; }
+    .top-nav { padding: 1.5rem; }
+    .content-area { padding: 1rem 1.5rem 3rem; }
+}
+
+/* === Continuation of style.css (Water & Habits) === */
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.section-header h2 {
+    font-size: 2rem;
+    color: var(--text-main);
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+.btn-outline:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+
+/* Water Tracker UI */
+.water-tracker-container {
+    display: flex;
+    gap: 3rem;
+    padding: 3rem;
+    align-items: center;
+}
+
+.water-visual {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+.water-glass {
+    width: 150px;
+    height: 300px;
+    border: 4px solid rgba(255,255,255,0.2);
+    border-top: none;
+    border-radius: 0 0 20px 20px;
+    position: relative;
+    overflow: hidden;
+    background: rgba(0,0,0,0.2);
+}
+
+.water-level {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #EF4444; /* Default to red */
+    transition: height 1s var(--spring), background-color 1s ease;
+}
+
+.water-stats h1 { font-size: 3.5rem; margin-bottom: 0.5rem; }
+.water-stats p { color: var(--text-muted); font-size: 1.1rem; }
+.water-stats h3 { font-size: 2.5rem; }
+
+.water-actions {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.water-btn-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.btn-water {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3B82F6;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 12px;
+}
+.btn-water:hover {
+    background: rgba(59, 130, 246, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+.btn-water i { font-size: 1.5rem; }
+
+.custom-water-log {
+    display: flex;
+    gap: 1rem;
+}
+.input-light {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: white;
+    font-family: var(--font-body);
+    outline: none;
+}
+.input-light:focus {
+    border-color: var(--accent-teal);
+}
+
+/* Sidebar mini water logic */
+.water-quick-add {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+.btn-water-quick {
+    flex: 1;
+    padding: 0.5rem;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3B82F6;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-water-quick:hover { background: rgba(59, 130, 246, 0.2); }
+.water-mini-progress {
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.water-fill {
+    height: 100%;
+    transition: width 1s var(--spring), background-color 1s ease;
+}
+
+/* Animations */
+.ripple-effect {
+    animation: ripple 1s linear;
+}
+
+@keyframes ripple {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Habits Library UI */
+.preset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.preset-card {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+.preset-card:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: var(--accent-teal);
+    transform: translateY(-2px);
+}
+
+.preset-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+}
+
+.preset-title {
+    font-weight: 600;
+    font-size: 1rem;
+}
+.preset-freq {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+.btn-add-preset {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 6px;
+    background: rgba(0, 245, 212, 0.1);
+    color: var(--accent-teal);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-add-preset:hover {
+    background: rgba(0, 245, 212, 0.2);
+}
+
+/* Modal / Core Habits UI */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+.modal-content {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    transform: translateY(20px);
+    transition: transform 0.3s var(--spring);
+}
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.btn-close {
+    background: transparent; border: none; color: white;
+    font-size: 1.5rem; cursor: pointer;
+}
+
+/* Daily tracking cards */
+.habit-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    transition: all 0.3s var(--spring);
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+}
+
+.habit-card:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+.habit-card.completed {
+    background: rgba(0, 245, 212, 0.1);
+    border-color: var(--accent-teal);
+    opacity: 0.8;
+}
+
+.habit-check {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s var(--spring);
+    color: transparent;
+    font-size: 1.2rem;
+}
+
+.habit-card.completed .habit-check {
+    background: var(--accent-teal);
+    border-color: var(--accent-teal);
+    color: var(--bg-dark);
+    box-shadow: var(--glow-teal);
+}
+
+.habit-info { flex: 1; }
+.habit-name { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.25rem; }
+.habit-card.completed .habit-name {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+.habit-meta { font-size: 0.85rem; color: var(--text-muted); display:flex; gap:1rem;}
+.habit-streak {
+    display: flex; align-items: center; gap: 0.25rem;
+    color: #EF4444; font-weight: bold; background: rgba(239, 68, 68, 0.1);
+    padding: 0.2rem 0.6rem; border-radius: 20px;
+}
+
+/* Responsive Water/Habits */
+@media (max-width: 768px) {
+    .water-tracker-container {
+        flex-direction: column;
+        padding: 1.5rem;
+    }
+}

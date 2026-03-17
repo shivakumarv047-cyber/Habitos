@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Nunito:wght@300;400;600;700;800&display=swap');
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg-deep: #050814;
+  --bg-surface: rgba(255,255,255,0.04);
+  --bg-card: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.08);
+  --border-glow: rgba(108,99,255,0.4);
+  --violet: #6C63FF;
+  --teal: #00F5D4;
+  --blue: #38BDF8;
+  --green: #4ADE80;
+  --coral: #FF6B6B;
+  --amber: #FFB347;
+  --text: #F0F0FF;
+  --text-muted: #A0A0C0;
+  --radius: 16px;
+  --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+html, body, #root { height:100%; background:var(--bg-deep); color:var(--text); font-family:'Nunito',sans-serif; overflow-x:hidden; }
+
+.glass { background:var(--bg-card); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid var(--border); border-radius:var(--radius); }
+
+button { cursor:pointer; font-family:'Nunito',sans-serif; transition:var(--transition); border:none; outline:none; }
+button:hover { transform:translateY(-2px); }
+button:active { transform:scale(0.97); }
+
+input, select, textarea { font-family:'Nunito',sans-serif; background:rgba(255,255,255,0.06); border:1px solid var(--border); border-radius:10px; color:var(--text); padding:12px 16px; width:100%; outline:none; transition:var(--transition); }
+input:focus, select:focus { border-color:var(--violet); box-shadow:0 0 0 3px rgba(108,99,255,0.15); }
+
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-thumb { background:var(--violet); border-radius:2px; }
+
+@keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+@keyframes glow { 0%,100%{box-shadow:0 0 20px rgba(108,99,255,0.3)} 50%{box-shadow:0 0 40px rgba(108,99,255,0.6)} }
+@keyframes float { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-10px)} }
+@keyframes ripple { 0%{transform:scale(0);opacity:1} 100%{transform:scale(4);opacity:0} }
+@keyframes fillWater { from{height:0%} to{height:var(--fill-height)} }
+@keyframes wave { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+@keyframes flamePulse { 0%,100%{transform:scaleY(1) scaleX(1)} 50%{transform:scaleY(1.1) scaleX(0.95)} }
+@keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
+@keyframes scaleIn { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
+@keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }

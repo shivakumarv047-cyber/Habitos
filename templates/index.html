@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Tracker - Premium Wellness</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons (Phosphor Icons or FontAwesome, using Phosphor for modern look) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Chart.js for Stats -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- Firebase Import Map -->
+    <script type="importmap">
+      {
+        "imports": {
+          "firebase/app": "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js",
+          "firebase/analytics": "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js"
+        }
+      }
+    </script>
+    <script type="module" src="/static/js/firebase-init.js"></script>
+</head>
+<body class="dark-theme">
+    
+    <div id="app-container">
+        <!-- Auth View -->
+        <section id="view-auth" class="view active">
+            <div class="auth-container glass-card">
+                <h1 class="logo">Habit<span class="accent">Tracker</span></h1>
+                
+                <div class="auth-tabs">
+                    <button class="tab-btn active" data-tab="login">Login</button>
+                    <button class="tab-btn" data-tab="signup">Sign Up</button>
+                </div>
+
+                <form id="form-login" class="auth-form active">
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="login-email" required placeholder="you@example.com">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Log In</button>
+                </form>
+
+                <form id="form-signup" class="auth-form hidden">
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" id="signup-username" required placeholder="Your name">
+                    </div>
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="signup-email" required placeholder="you@example.com">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="signup-password" required placeholder="••••••••">
+                    </div>
+                    <div class="input-group">
+                        <label>Avatar Color</label>
+                        <div class="color-picker" id="signup-color">
+                            <div class="color-option active" style="background-color: var(--accent-teal);" data-color="teal"></div>
+                            <div class="color-option" style="background-color: var(--accent-amber);" data-color="amber"></div>
+                            <div class="color-option" style="background-color: var(--accent-violet);" data-color="violet"></div>
+                            <div class="color-option" style="background-color: #EF4444;" data-color="red"></div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Main Dashboard View -->
+        <section id="view-main" class="view hidden">
+            
+            <!-- Sidebar -->
+            <nav class="sidebar">
+                <div class="sidebar-logo">
+                    <i class="ph-bold ph-leaf"></i>
+                </div>
+                <div class="nav-links">
+                    <a href="#" class="nav-link active" data-target="dashboard" title="Dashboard">
+                        <i class="ph ph-squares-four"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-link" data-target="habits" title="Habits">
+                        <i class="ph ph-check-circle"></i>
+                        <span>Habits</span>
+                    </a>
+                    <a href="#" class="nav-link" data-target="water" title="Water Tracker">
+                        <i class="ph ph-drop"></i>
+                        <span>Water</span>
+                    </a>
+                    <a href="#" class="nav-link" data-target="stats" title="Statistics">
+                        <i class="ph ph-chart-bar"></i>
+                        <span>Stats</span>
+                    </a>
+                    <a href="#" class="nav-link" data-target="rewards" title="Rewards">
+                        <i class="ph ph-trophy"></i>
+                        <span>Rewards</span>
+                    </a>
+                    <a href="#" class="nav-link" data-target="settings" title="Settings">
+                        <i class="ph ph-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="main-wrapper">
+                <!-- Top Navbar -->
+                <header class="top-nav">
+                    <div class="greeting">
+                        <h2 id="user-greeting">Welcome back!</h2>
+                        <p class="date-text" id="current-date">Loading date...</p>
+                    </div>
+                    
+                    <div class="nav-actions">
+                        <!-- Search / Quick Add -->
+                        <div class="nav-icon" title="Daily Quote">
+                            <i class="ph ph-quotes"></i>
+                            <div class="quote-tooltip">"Small daily improvements are the key to staggering long-term results."</div>
+                        </div>
+                        <div class="nav-icon notification-bell">
+                            <i class="ph ph-bell"></i>
+                            <span class="badge">3</span>
+                        </div>
+                        <div class="user-profile">
+                            <div class="avatar" id="nav-avatar">U</div>
+                            <span id="nav-username">User</span>
+                            <i class="ph ph-caret-down"></i>
+                            <div class="profile-dropdown">
+                                <a href="#" id="btn-logout"><i class="ph ph-sign-out"></i> Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Content Area -->
+                <main class="content-area">
+                    <!-- Dynamic Content Inject Here based on active nav -->
+                    <div id="content-dashboard" class="content-section active">
+                        <!-- Dashboard UI -->
+                        <div class="dashboard-grid">
+                            
+                            <!-- Daily Progress -->
+                            <div class="glass-card stat-card main-progress">
+                                <h3>Today's Progress</h3>
+                                <div class="progress-info">
+                                    <h1 id="today-percentage">0%</h1>
+                                    <p><span id="today-completed-count">0</span>/<span id="today-total-count">0</span> habits done</p>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="main-progress-bar" style="width: 0%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Login Streak -->
+                            <div class="glass-card stat-card login-streak">
+                                <h3>Login Streak</h3>
+                                <div class="streak-display">
+                                    <i class="ph-fill ph-fire streak-icon"></i>
+                                    <h1 id="login-streak-counter">0</h1>
+                                </div>
+                                <p>days in a row</p>
+                            </div>
+
+                        </div>
+
+                        <!-- Today's Habits List Header -->
+                        <div class="section-header mt-4">
+                            <h2>Today's Habits</h2>
+                            <button class="btn btn-sm btn-outline" id="btn-add-habit"><i class="ph ph-plus"></i> Add Habit</button>
+                        </div>
+
+                        <!-- Habit List -->
+                        <div class="habit-list grid" id="today-habit-list">
+                            <!-- Habits injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Water Tracker View -->
+                    <div id="content-water" class="content-section">
+                        <div class="section-header">
+                            <h2>Hydration Station</h2>
+                            <button class="btn btn-sm btn-outline" id="btn-edit-water-goal"><i class="ph ph-target"></i> Edit Goal</button>
+                        </div>
+                        
+                        <div class="water-tracker-container glass-card">
+                            <div class="water-visual">
+                                <!-- The animated glass -->
+                                <div class="water-glass">
+                                    <div class="water-level" id="main-water-level" style="height: 0%; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5)"></div>
+                                </div>
+                                
+                                <div class="water-stats">
+                                    <h1 id="water-current-text">0ml</h1>
+                                    <p>of <span id="water-goal-text">2000ml</span> daily goal</p>
+                                    <h3 id="water-percent-text" class="accent mt-2">0%</h3>
+                                </div>
+                            </div>
+                            
+                            <div class="water-actions">
+                                <h3>Quick Log</h3>
+                                <div class="water-btn-grid">
+                                    <button class="btn btn-water" data-amount="250">
+                                        <i class="ph ph-drop"></i> +250ml
+                                    </button>
+                                    <button class="btn btn-water" data-amount="500">
+                                        <i class="ph ph-drop"></i> +500ml
+                                    </button>
+                                    <button class="btn btn-water" data-amount="1000">
+                                        <i class="ph ph-drop"></i> +1L
+                                    </button>
+                                </div>
+                                <div class="custom-water-log mt-4">
+                                    <input type="number" id="custom-water-amount" placeholder="Custom ml" class="input-light">
+                                    <button class="btn btn-primary" id="btn-custom-water">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Habits View -->
+                    <div id="content-habits" class="content-section">
+                        <div class="section-header">
+                            <h2>My Habits</h2>
+                            <button class="btn btn-sm btn-primary" id="btn-create-habit"><i class="ph ph-plus"></i> Create Custom</button>
+                        </div>
+                        
+                        <div class="preset-habits-container mt-4">
+                            <h3>Quick Add Presets</h3>
+                            <div class="preset-grid" id="preset-habits-grid">
+                                <!-- Injected via habits.js -->
+                            </div>
+                        </div>
+
+                        <div class="my-habits-container mt-4">
+                            <h3>All Active Habits</h3>
+                            <div class="habit-list grid" id="all-habits-list">
+                                <!-- Injected via habits.js -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats View -->
+                    <div id="content-stats" class="content-section">
+                        <div class="section-header">
+                            <h2>Analytics & Insights</h2>
+                        </div>
+                        
+                        <div class="dashboard-grid">
+                            <div class="glass-card stat-card" style="grid-column: 1 / -1;">
+                                <h3>Weekly Overview</h3>
+                                <canvas id="chart-weekly" height="80"></canvas>
+                            </div>
+                            
+                            <div class="glass-card stat-card">
+                                <h3>Water Intake Trend</h3>
+                                <canvas id="chart-water" height="150"></canvas>
+                            </div>
+                            
+                            <div class="glass-card stat-card">
+                                <h3>Top Habits</h3>
+                                <ul id="stats-top-habits" style="list-style: none; padding: 0; margin-top: 1rem;">
+                                    <!-- Injected via stats.js -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rewards View -->
+                    <div id="content-rewards" class="content-section">
+                        <div class="section-header">
+                            <h2>Achievements</h2>
+                            <div class="user-level-badge">
+                                <span id="reward-level" class="accent" style="font-size:1.5rem; font-weight:bold;">Lv 1</span>
+                                <span id="reward-xp" style="color:var(--text-muted); margin-left:10px;">0 / 100 XP</span>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-bar-container mb-4" style="height:12px;">
+                            <div class="progress-bar-fill" id="reward-xp-bar" style="width: 0%; box-shadow: 0 0 15px var(--accent-amber); background: var(--accent-amber);"></div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h3>Badge Collection</h3>
+                            <div class="preset-grid mt-2" id="badge-grid">
+                                <!-- Injected via rewards.js -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings View -->
+                    <div id="content-settings" class="content-section">
+                        <div class="section-header">
+                            <h2>Settings</h2>
+                        </div>
+                        
+                        <div class="dashboard-grid">
+                            <div class="glass-card stat-card">
+                                <h3>Profile & Preferences</h3>
+                                <div class="input-group">
+                                    <label>Avatar Color</label>
+                                    <div class="color-picker" id="settings-avatar-color">
+                                        <div class="color-option" style="background-color: var(--accent-teal);" data-color="teal"></div>
+                                        <div class="color-option" style="background-color: var(--accent-amber);" data-color="amber"></div>
+                                        <div class="color-option" style="background-color: var(--accent-violet);" data-color="violet"></div>
+                                        <div class="color-option" style="background-color: #EF4444;" data-color="red"></div>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label>Daily Water Goal (ml)</label>
+                                    <input type="number" id="settings-water-goal" class="input-light" placeholder="2000">
+                                </div>
+                                <button class="btn btn-primary" id="btn-save-settings">Save Preferences</button>
+                            </div>
+
+                            <div class="glass-card stat-card">
+                                <h3>Notifications</h3>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                                    <span>Enable Push Notifications</span>
+                                    <button class="btn btn-sm btn-outline" id="btn-request-notif">Allow</button>
+                                </div>
+                                <p style="color:var(--text-muted); font-size:0.85rem;">Get reminded about your daily habits and hydration goals.</p>
+                            </div>
+
+                            <div class="glass-card stat-card">
+                                <h3>Data Management</h3>
+                                <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                                    <button class="btn btn-sm btn-outline" id="btn-export-data"><i class="ph ph-download-simple"></i> Export Backup (JSON)</button>
+                                    
+                                    <input type="file" id="import-file" style="display:none;" accept=".json">
+                                    <button class="btn btn-sm btn-outline" id="btn-trigger-import"><i class="ph ph-upload-simple"></i> Import Backup</button>
+                                    
+                                    <button class="btn btn-sm" id="btn-clear-data" style="margin-top:1rem; border:1px solid #EF4444; color:#EF4444;"><i class="ph ph-trash"></i> Delete Account Data</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+            
+            <!-- Right Panel (Daily Summary etc) -->
+            <aside class="right-panel glass-panel">
+                <div class="panel-section tip-of-day">
+                    <h3>💡 Tip of the Day</h3>
+                    <p id="motivational-tip">Focus on consistency over intensity. Doing a little every day builds a lasting habit.</p>
+                </div>
+                
+                <div class="panel-section mini-water">
+                    <h3>💧 Quick Water Log</h3>
+                    <div class="water-quick-add">
+                        <button class="btn-water-quick" data-amount="250">+250ml</button>
+                        <button class="btn-water-quick" data-amount="500">+500ml</button>
+                    </div>
+                    <div class="water-mini-progress">
+                        <div class="water-fill" style="width: 30%;"></div>
+                    </div>
+                </div>
+            </aside>
+
+        </section>
+
+        <!-- Habit Creation Modal -->
+        <div class="modal-overlay" id="modal-habit">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Create Custom Habit</h2>
+                    <button class="btn-close" id="btn-close-modal"><i class="ph ph-x"></i></button>
+                </div>
+                <form id="form-habit" class="pb-2">
+                    <div class="input-group">
+                        <label>Habit Name</label>
+                        <input type="text" id="habit-name" required placeholder="e.g. Code for 1 hour">
+                    </div>
+                    
+                    <div class="input-group" style="display:flex; gap: 1rem;">
+                        <div style="flex:1">
+                            <label>Icon (Emoji)</label>
+                            <input type="text" id="habit-icon" required value="💻" maxlength="2" style="font-size: 1.5rem; text-align: center;">
+                        </div>
+                        <div style="flex:2">
+                            <label>Times per day</label>
+                            <input type="number" id="habit-target" required value="1" min="1" max="20">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Theme Color</label>
+                        <div class="color-picker" id="habit-color">
+                            <div class="color-option active" style="background-color: var(--accent-teal);" data-color="var(--accent-teal)"></div>
+                            <div class="color-option" style="background-color: var(--accent-amber);" data-color="var(--accent-amber)"></div>
+                            <div class="color-option" style="background-color: var(--accent-violet);" data-color="var(--accent-violet)"></div>
+                            <div class="color-option" style="background-color: #EF4444;" data-color="#EF4444"></div>
+                            <div class="color-option" style="background-color: #3B82F6;" data-color="#3B82F6"></div>
+                            <div class="color-option" style="background-color: #10B981;" data-color="#10B981"></div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100" style="width: 100%;">Save Habit</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/storage.js"></script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/water.js"></script>
+    <script src="/static/js/habits.js"></script>
+    <script src="/static/js/rewards.js"></script>
+    <script src="/static/js/stats.js"></script>
+    <script src="/static/js/settings.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
